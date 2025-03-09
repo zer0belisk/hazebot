@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class LiftController {
     private DcMotor liftMotor;
 
-    // Ограничители (максимальные значения для тестирования)
-    private int minPosition = 22; // Минимальная высота (отрицательное значение, если нужно)
-    private int maxPosition = -11500; // Максимальная высота (ограничение вверх)
+    // Ограничители (максимальные значения)
+    private int minPosition = 22; // Минимальная высота
+    private int maxPosition = -11500; // Максимальная высота
 
     // Скорость мотора
     private final double LIFT_SPEED = 1.0;
@@ -22,23 +22,10 @@ public class LiftController {
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    // Установка ограничений для лифта
-    public void setLimits(int min, int max) {
-        this.minPosition = -11500;
-        this.maxPosition = 0;
-    }
-
-    // Управление мотором лифта с D-Pad (Up / Down)
-    public void controlLift(boolean up, boolean down) {
-        int currentPosition = liftMotor.getCurrentPosition();
-
-        if (up && currentPosition < maxPosition) {
-            liftMotor.setPower(LIFT_SPEED); // Движение вверх
-        } else if (down && currentPosition > minPosition) {
-            liftMotor.setPower(-LIFT_SPEED); // Движение вниз
-        } else {
-            liftMotor.setPower(0); // Остановка
-        }
+    // Управление лифтом с триггерами L2 и R2
+    public void controlLift(double leftTrigger, double rightTrigger) {
+        double power = rightTrigger - leftTrigger; // R2 поднимает, L2 опускает
+        liftMotor.setPower(power * LIFT_SPEED); // Управление скоростью
     }
 
     // Возвращает текущую позицию лифта
@@ -46,13 +33,6 @@ public class LiftController {
         return liftMotor.getCurrentPosition();
     }
 
-    // Возвращает минимальное ограничение
-    public int getMinLimit() {
-        return minPosition;
-    }
-
-    // Возвращает максимальное ограничение
-    public int getMaxLimit() {
-        return maxPosition;
+    public void setLimits(int minValue, int maxValue) {
     }
 }

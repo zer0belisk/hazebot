@@ -12,7 +12,6 @@ public class DriveControl extends OpMode {
     private ServoController servoController = new ServoController();
     private SpinMotor spinMotor = new SpinMotor();
 
-
     @Override
     public void init() {
         robot.init(hardwareMap);
@@ -21,10 +20,7 @@ public class DriveControl extends OpMode {
         servoController.init(hardwareMap);
         spinMotor.init(hardwareMap);
 
-
-
         liftController.setLimits(Integer.MIN_VALUE, Integer.MAX_VALUE); // Макс. значения для теста
-
 
         telemetry.addData("Status", "Initialized");
     }
@@ -35,10 +31,10 @@ public class DriveControl extends OpMode {
         double driveY = gamepad1.left_stick_y; // Вперед/назад
         double driveX = -gamepad1.left_stick_x; // Вправо/влево
         double turn = -gamepad1.right_stick_x; // Поворот
+
         // Управление сервоприводами
         servoController.controlSpinner(gamepad2.circle);
         servoController.controlPlate(gamepad2.square);
-
 
         // Расчет мощности для моторов
         double leftFrontPower = driveY + driveX + turn;
@@ -71,7 +67,8 @@ public class DriveControl extends OpMode {
         } else {
             armController.controlArm(0.0); // Остановка руки
         }
-// --- Управление спиннером (геймпад 2, R2/L2) ---
+
+        // --- Управление спиннером (геймпад 2, R2/L2) ---
         if (gamepad2.right_trigger > 0.1) {
             spinMotor.controlSpin(gamepad2.right_trigger); // Крутить по часовой стрелке (R2)
         } else if (gamepad2.left_trigger > 0.1) {
@@ -81,9 +78,7 @@ public class DriveControl extends OpMode {
         }
 
 
-
-        // --- Управление лифтом ---
-        liftController.controlLift(gamepad2.dpad_down, gamepad2.dpad_up);
+        liftController.controlLift(gamepad1.right_trigger, gamepad1.left_trigger);
 
         // --- Вывод данных на Driver Station ---
         telemetry.addData("Motor Power", "LF: %.2f, RF: %.2f, LR: %.2f, RR: %.2f",
@@ -91,8 +86,7 @@ public class DriveControl extends OpMode {
         telemetry.addData("Joystick", "X: %.2f, Y: %.2f", driveX, driveY);
         telemetry.addData("Arm Position", armController.getArmPosition());
         telemetry.addData("Lift Position", liftController.getLiftPosition());
-        telemetry.addData("Lift Max Limit",liftController.getMaxLimit());
-        telemetry.addData("Lift Min Limit",liftController.getMinLimit());
+
 
         telemetry.update();
     }
